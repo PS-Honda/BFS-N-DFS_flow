@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>ยินดีต้อนรับ</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  var dataTree = new Array();
+  function getData2Tree(){ //ฟังก์ชันนำข้อมูลเข้าสู่ต้นไม้
+    dataTree.push('root'); //เพิ่มโหนดราก
+    for(var i=1; i<=4; i++){ //ตามจำนวนตึก
+      var tmpParent = $('#data'+i).prop('id'); //เก็บ id ตึก ในตัวแปร
+      dataTree.push(tmpParent); //เก็บ id ตึก ในต้นไม้
+      }
+    for(var i=1; i<=4; i++){ //ตามจำนวนตึก
+      for(var j = 1; j<=3; j++){ //ตามจำนวนห้องต่อ1ตึก
+        var tmpChiled = $('#data'+i+'_'+j).prop('id'); //เก็บ id ห้อง ในตัวแปร
+        dataTree.push(tmpChiled); //เก็บ id ห้อง ในต้นไม้
+      }
+    }
+  }
+  function setTreeToData(data){ //ฟังก์ชันย้ายจากต้นไม้มาInput
+    $('#'+data).attr('hidden',true);  //ลบโหนดที่ต้นไม
+    $('#'+data+"_data").attr('hidden',false);  //แสดงโนหดที่ input
+  }
+  function setDataToQueue(data){
+    $('#'+data+"_data").attr('hidden',true);  //ลบโหนดที่ input
+    $('#'+data+"_queue").attr('hidden',false);  //แสดงโหนดที่ queue
+  }
+  function setQueueToOutput(data){
+    $('#'+data+"_queue").attr('hidden',true);  //ลบโหนดที่ queue
+    $('#'+data+"_out").attr('hidden',false);  //แสดงโนหดที่ output
+  }
+function getToData(i,result,speed){  //ฟังก์ชัน เรียกใช้ฟังก์ชัน setTreeToData แบบวนซ้ำ
+  var index = i; //ประกาศตัวแปรจาก พารามิเตอร์ (ส่วนของต่ำแหน่งของข้อมูล)
+  var time = speed; //ประกาศตัวแปรจาก พารามิเตอร์  (ส่วนของความเร็วในการเปลี่ยนแปลง)
+  setTreeToData(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
+      setTimeout(function(){ //คำสั่งหน่วงเวลา พร้อมฟังก์ชันการทำงาน
+      if(index >= dataTree.length){ //ตรวจสอบว่าตำแหน่งข้อมูลเกินกว่าจำนวนข้อมูลที่มมีอยู่ไหม
+        getToQueue(0,result,speed); //เป็นจริงให้เรียกใช้ฟังก์ชั้นต่อไป
+      }else{
+        index++; // เป็นเท็จให้เพิ่มตำแหน่งข้อมูลอีก 1
+        getToData(index,result,speed); //เรียกใช้ฟังก์ชั้นตัวเอง (การวนซ้ำ)
+      }
+    },time); // กำหนดเวลาหน่วง
+  }
+function getToQueue(i,result,speed){ //ฟังก์ชัน เรียกใช้ฟังก์ชัน setDataToQueue แบบวนซ้ำ
+  var index = i; //ประกาศตัวแปรจาก พารามิเตอร์ (ส่วนของต่ำแหน่งของข้อมูล)
+  var time = speed; //ประกาศตัวแปรจาก พารามิเตอร์  (ส่วนของความเร็วในการเปลี่ยนแปลง)
+  setDataToQueue(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
+      setTimeout(function(){  //คำสั่งหน่วงเวลา พร้อมฟังก์ชันการทำงาน
+      if(index >= dataTree.length){ //ตรวจสอบว่าตำแหน่งข้อมูลเกินกว่าจำนวนข้อมูลที่มมีอยู่ไหม
+        getToOut(0,result,speed);  //เป็นจริงให้เรียกใช้ฟังก์ชั้นต่อไป
+      }else{
+       index++; // เป็นเท็จให้เพิ่มตำแหน่งข้อมูลอีก 1
+       getToQueue(index,result,speed);  //เรียกใช้ฟังก์ชั้นตัวเอง (การวนซ้ำ)
+    }
+  },time); // กำหนดเวลาหน่วง
+}
+function getToOut(i,result,speed){ //ฟังก์ชัน เรียกใช้ฟังก์ชัน setQueueToOutput แบบวนซ้ำ
+  var index = i;  //ประกาศตัวแปรจาก พารามิเตอร์ (ส่วนของต่ำแหน่งของข้อมูล)
+  var time = speed; //ประกาศตัวแปรจาก พารามิเตอร์  (ส่วนของความเร็วในการเปลี่ยนแปลง)
+  setQueueToOutput(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
+  var output = $('#'+dataTree[index]).prop('id'); //นำข้อมูลที่ได้ไปเรียกดู id ของข้อมูล และเก็บในตัวแปร
+  if(output == result){ //ตัวแปรที่ดึงข้อมูลมาเปรียบเทียบกับผลลัพธ์ที่ต้องการ
+    alert('Find time\'s : '+(index+1)); //ถ้าเป็นจริง แสดงจำนวนครั้งที่ค้นหา
+    return true; //ยุติฟังก์ชั้นทั้งหมด
+  }else{
+      setTimeout(function(){  //คำสั่งหน่วงเวลา พร้อมฟังก์ชันการทำงาน
+      $('#'+dataTree[index]+"_out").attr('hidden',true); //ลบข้อมูลที่ output ออก
+      index++; // เป็นเท็จให้เพิ่มตำแหน่งข้อมูลอีก 1
+      getToOut(index,result,speed);  //เรียกใช้ฟังก์ชั้นตัวเอง (การวนซ้ำ)
+    },time); // กำหนดเวลาหน่วง
+  }
+}
+$('#start').click(function(){//เริ่มทำงานเมื่อคลิกปุ่ม เหมือน void main
+  getData2Tree();//สั่งให้นำข้อมูลเข้าต้นไม้
+  var getNode = $('#selectNode').val(); //รับผลลัพธ์ที่ต้องการไว้ตัวแปร
+  var speed =   $('#speed').val(); // รับความเร็วที่ต้องการไว้ตัวแปร
+  if(getNode == '' || speed == '' ){ //ตรวจสอบค่าที่รับมาครบไหม
+    alert('กรุณาระบุเงื่อนไขให้ครบ'); //ไม่ครบให้แจ้งเตือนและใส่ใหม่
+  }else{
+      getToData(0,getNode,speed); // ครบให้เริ่มทำงานพร้อมให้ข้อใูล
+    }
+  });
+    });
+</script>
+<style>
+.output{
+  background-color: lightgreen;
+  padding-top: 60px;
+}
+.queue{
+
+  background-color: lightblue;
+  padding-top: 60px;
+  margin-left: 100px;
+}
+.data{
+
+  background-color: lightyellow;
+  padding-top: 60px;
+  margin-left: 100px;
+}
+/* .data-out{
+  visibility: hidden;
+}
+.data-queue{
+  visibility: hidden;
+}
+.data-data{
+  visibility: hidden;
+} */
+</style>
+</head>
+<body style="background-color:#e6f7ff;">
+  <br>
+  <div class="container text-center">
+    <h1>โปรแกรมจำลองการทำงานของอัลกอริทึม Breadth First Search</h1>
+    <div class="row">
+    <div class="col-lg-4">
+    <select name="selectNode" id="selectNode" class="form-control">
+      <option value="">*****เลือกห้องที่ต้องการค้นหา******</option>
+      <option value="data1_1">ห้องคอม</option>
+      <option value="data1_2">ห้องแลป</option>
+      <option value="data1_3">ห้องทดลอง</option>
+      <option value="data2_1">ห้องภาษา</option>
+      <option value="data2_2">ห้องดนตรี</option>
+      <option value="data2_3">ห้องศิลป์</option>
+      <option value="data3_1">ห้องโลจิสติก</option>
+      <option value="data3_2">ห้องคอม</option>
+      <option value="data3_3">ห้องบัญชี</option>
+      <option value="data4_1">ห้อง</option>
+      <option value="data4_2">ROOM</option>
+      <option value="data4_3">ห้องนั่งเล่น</option>
+    </select>
+  </div>
+    <div class="col-lg-4">
+    <select name="speed" id="speed" class="form-control">
+      <option value="">*****เลือกความเร็วในการค้นหา******</option>
+      <option value="100">  .1 วินาที </option>
+      <option value="500">  .5 วินาที </option>
+      <option value="1000">  1 วินาที </option>
+    </select>
+  </div>
+    <button type="button" class="btn btn-primary" id="start">BFS Start</button>
+  </div>
+  <br>
+  <div class="row">
+    <button type="button" class=" btn-success" id="root">มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
+  </div>
+  <br><br><br>
+  <div class="row text-left">
+    <button type="button" class="" id="data1" style="margin-left:10%;background-color:yellow;">ตึกวิทยาศาสตร์ </button>
+    <button type="button" class="" id="data2" style="margin-left:10%;background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
+    <button type="button" class="" id="data3" style="margin-left:10%;background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
+    <button type="button" class="" id="data4" style="margin-left:10%;background-color:skyblue;">ตึกครุศาสตร์ </button>
+  </div>
+    <br><br><br>
+  <div class="row text-left">
+    <button type="button" class="" id="data1_1" style="background-color:yellow;">ห้องคอม</button>
+    <button type="button" class="" id="data1_2" style="background-color:yellow;">ห้องแลป </button>
+    <button type="button" class="" id="data1_3" style="background-color:yellow;">ห้องทดลอง</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" class="" id="data2_1" style="background-color:blue;color:white;">ห้องภาษา</button>
+    <button type="button" class="" id="data2_2" style="background-color:blue;color:white;">ห้องดนตรี</button>
+    <button type="button" class="" id="data2_3" style="background-color:blue;color:white;">ห้องศิลป์</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" class="" id="data3_1" style="background-color:purple;color:white;">ห้องโลจิสติก</button>
+    <button type="button" class="" id="data3_2" style="background-color:purple;color:white;">ห้องคอม</button>
+    <button type="button" class="" id="data3_3" style="background-color:purple;color:white;">ห้องบัญชี</button>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" class="" id="data4_1" style="background-color:skyblue;">ห้อง</button>
+    <button type="button" class="" id="data4_2" style="background-color:skyblue;">ROOM</button>
+    <button type="button" class="" id="data4_3" style="background-color:skyblue;">ห้องนั่งเล่น</button>
+  </div>
+  <br><br>
+  <div class="row">
+    <h1 class="text-center text-primary">การเข้าคิว</h1>
+    <div class="row">
+      <div class="output col-lg-3">
+            <p> output </p>
+          <button type="button" class=" btn-success data-out" id="root_out"  hidden>มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
+          <button type="button" class="  data-out" id="data1_out" hidden  style=" background-color:yellow;">ตึกวิทยาศาสตร์ </button>
+          <button type="button" class="  data-out" id="data2_out" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
+          <button type="button" class="  data-out" id="data3_out" hidden  style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
+          <button type="button" class="  data-out" id="data4_out" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button>
+          <button type="button" class="  data-out" id="data1_1_out" hidden style="background-color:yellow;">ห้องคอม</button>
+          <button type="button" class="  data-out" id="data1_2_out" hidden style="background-color:yellow;">ห้องแลป </button>
+          <button type="button" class="  data-out" id="data1_3_out" hidden style="background-color:yellow;">ห้องทดลอง</button>
+          <button type="button" class="  data-out" id="data2_1_out" hidden style="background-color:blue;color:white;">ห้องภาษา</button>
+          <button type="button" class="  data-out" id="data2_2_out" hidden style="background-color:blue;color:white;">ห้องดนตรี</button>
+          <button type="button" class="  data-out" id="data2_3_out" hidden style="background-color:blue;color:white;">ห้องศิลป์</button>
+          <button type="button" class="  data-out" id="data3_1_out" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button>
+          <button type="button" class="  data-out" id="data3_2_out" hidden style="background-color:purple;color:white;">ห้องคอม</button>
+          <button type="button" class="  data-out" id="data3_3_out" hidden style="background-color:purple;color:white;">ห้องบัญชี</button>
+          <button type="button" class="  data-out" id="data4_1_out" hidden style="background-color:skyblue;">ห้อง</button>
+          <button type="button" class="  data-out" id="data4_2_out" hidden style="background-color:skyblue;">ROOM</button>
+          <button type="button" class="  data-out" id="data4_3_out" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+      </div>
+      <div class="queue col-lg-5">
+            <p> queue</p>
+        <button type="button" class="   btn-success data-queue" id="root_queue"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
+        <button type="button" class="  data-queue" id="data1_queue" hidden  style=" background-color:yellow;">ตึกวิทยาศาสตร์ </button>
+        <button type="button" class="  data-queue" id="data2_queue" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
+        <button type="button" class="  data-queue" id="data3_queue" hidden  style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
+        <button type="button" class="  data-queue" id="data4_queue"  hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button>
+        <button type="button" class="  data-queue" id="data1_1_queue" hidden style="background-color:yellow;">ห้องคอม</button>
+        <button type="button" class="  data-queue" id="data1_2_queue" hidden style="background-color:yellow;">ห้องแลป </button>
+        <button type="button" class="  data-queue" id="data1_3_queue" hidden style="background-color:yellow;">ห้องทดลอง</button>
+        <button type="button" class="  data-queue" id="data2_1_queue" hidden style="background-color:blue;color:white;">ห้องภาษา</button>
+        <button type="button" class="  data-queue" id="data2_2_queue" hidden style="background-color:blue;color:white;">ห้องดนตรี</button>
+        <button type="button" class="  data-queue" id="data2_3_queue" hidden style="background-color:blue;color:white;">ห้องศิลป์</button>
+        <button type="button" class="  data-queue" id="data3_1_queue" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button>
+        <button type="button" class="  data-queue" id="data3_2_queue" hidden style="background-color:purple;color:white;">ห้องคอม</button>
+        <button type="button" class="  data-queue" id="data3_3_queue" hidden style="background-color:purple;color:white;">ห้องบัญชี</button>
+        <button type="button" class="  data-queue" id="data4_1_queue" hidden style="background-color:skyblue;">ห้อง</button>
+        <button type="button" class="  data-queue" id="data4_2_queue" hidden style="background-color:skyblue;">ROOM</button>
+        <button type="button" class="  data-queue" id="data4_3_queue" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+      </div>
+      <div class="data col-lg-2">
+            <p> input </p>
+        <button type="button" class="  btn-success data-data" id="root_data"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
+        <button type="button" class="  data-data" id="data1_data" hidden style="background-color:yellow;">ตึกวิทยาศาสตร์ </button>
+        <button type="button" class="  data-data" id="data2_data" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
+        <button type="button" class="  data-data" id="data3_data" hidden style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
+        <button type="button" class="  data-data" id="data4_data" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button>
+        <button type="button" class="  data-data" id="data1_1_data" hidden style="background-color:yellow;">ห้องคอม</button>
+        <button type="button" class="  data-data" id="data1_2_data" hidden  style="background-color:yellow;">ห้องแลป </button>
+        <button type="button" class="  data-data" id="data1_3_data" hidden style="background-color:yellow;">ห้องทดลอง</button>
+        <button type="button" class="  data-data" id="data2_1_data" hidden style="background-color:blue;color:white;">ห้องภาษา</button>
+        <button type="button" class="  data-data" id="data2_2_data" hidden style="background-color:blue;color:white;">ห้องดนตรี</button>
+        <button type="button" class="  data-data" id="data2_3_data" hidden style="background-color:blue;color:white;">ห้องศิลป์</button>
+        <button type="button" class="  data-data" id="data3_1_data" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button>
+        <button type="button" class="  data-data" id="data3_2_data" hidden style="background-color:purple;color:white;">ห้องคอม</button>
+        <button type="button" class="  data-data" id="data3_3_data" hidden style="background-color:purple;color:white;">ห้องบัญชี</button>
+        <button type="button" class="  data-data" id="data4_1_data" hidden style="background-color:skyblue;">ห้อง</button>
+        <button type="button" class="  data-data" id="data4_2_data" hidden style="background-color:skyblue;">ROOM</button>
+        <button type="button" class="  data-data" id="data4_3_data" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+      </div>
+    <div>
+  <div>
+</div>
+</body>
+</html>

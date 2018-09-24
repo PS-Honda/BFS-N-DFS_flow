@@ -30,9 +30,16 @@ $(document).ready(function(){
     $('#'+data+"_data").attr('hidden',true);  //ลบโหนดที่ input
     $('#'+data+"_queue").attr('hidden',false);  //แสดงโหนดที่ queue
   }
-  function setQueueToOutput(data){
-    $('#'+data+"_queue").attr('hidden',true);  //ลบโหนดที่ queue
+  function setQueueToOutput(data){/*
+    $('#'+data+"_queue").attr('hidden',true);  //ลบโหนดที่ queue*/
+    $('#'+data+"_queue").css('background-color','red'); //เปลี่ยนสีของห้องที่เดินผ่านเป็นสีแดง
     $('#'+data+"_out").attr('hidden',false);  //แสดงโนหดที่ output
+  }
+  function getTimeline(index){ // ฟังก์ชัน แสดงพาทใหม่
+    for(let i = 0; i<=index; i++){ //รับค่าว่าต้องแสดงตัวไหนบ้าง
+      $('#'+dataTree[i]+"_finaly").attr('hidden',false); //สั่งให้แสดง
+
+      }
   }
 function getToData(i,result,speed){  //ฟังก์ชัน เรียกใช้ฟังก์ชัน setTreeToData แบบวนซ้ำ
   var index = i; //ประกาศตัวแปรจาก พารามิเตอร์ (ส่วนของต่ำแหน่งของข้อมูล)
@@ -66,16 +73,21 @@ function getToOut(i,result,speed){ //ฟังก์ชัน เรียกใ
   setQueueToOutput(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
   var output = $('#'+dataTree[index]).prop('id'); //นำข้อมูลที่ได้ไปเรียกดู id ของข้อมูล และเก็บในตัวแปร
   if(output == result){ //ตัวแปรที่ดึงข้อมูลมาเปรียบเทียบกับผลลัพธ์ที่ต้องการ
-    alert('Find time\'s : '+(index+1)); //ถ้าเป็นจริง แสดงจำนวนครั้งที่ค้นหา
+    $('#'+dataTree[index]+"_out").css('background-color','#4dff4d'); // เปลี่ยนสีผลลัพท์เป็นสีเขียว
+    $('#'+dataTree[index]+"_finaly").css('background-color','#4dff4d'); // เปลี่ยนสีผลลัพท์เป็นสีเขียว
+    //alert('Find time\'s : '+(index+1)); //ถ้าเป็นจริง แสดงจำนวนครั้งที่ค้นหา
+    document.getElementById("number").innerHTML = index+1; //บอกจำนวนห้องที่ต้องแสดง
+    getTimeline(index); //เรียกใช้คำสั่งแสดงรายการ
     return true; //ยุติฟังก์ชั้นทั้งหมด
   }else{
       setTimeout(function(){  //คำสั่งหน่วงเวลา พร้อมฟังก์ชันการทำงาน
-      $('#'+dataTree[index]+"_out").attr('hidden',true); //ลบข้อมูลที่ output ออก
+      $('#'+dataTree[index]+"_out").css('background-color','red'); //เปลี่ยนสีของห้องที่เดินผ่านเป็นสีแดง
       index++; // เป็นเท็จให้เพิ่มตำแหน่งข้อมูลอีก 1
       getToOut(index,result,speed);  //เรียกใช้ฟังก์ชั้นตัวเอง (การวนซ้ำ)
     },time); // กำหนดเวลาหน่วง
   }
 }
+
 $('#start').click(function(){//เริ่มทำงานเมื่อคลิกปุ่ม เหมือน void main
   getData2Tree();//สั่งให้นำข้อมูลเข้าต้นไม้
   var getNode = $('#selectNode').val(); //รับผลลัพธ์ที่ต้องการไว้ตัวแปร
@@ -183,66 +195,86 @@ $('#start').click(function(){//เริ่มทำงานเมื่อค�
     <div class="row">
       <div class="output col-lg-3">
             <p> output </p>
-          <button type="button" class=" btn-success data-out" id="root_out"  hidden>มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
-          <button type="button" class="  data-out" id="data1_out" hidden  style=" background-color:yellow;">ตึกวิทยาศาสตร์ </button>
-          <button type="button" class="  data-out" id="data2_out" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
-          <button type="button" class="  data-out" id="data3_out" hidden  style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
-          <button type="button" class="  data-out" id="data4_out" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button>
-          <button type="button" class="  data-out" id="data1_1_out" hidden style="background-color:yellow;">ห้องคอม</button>
-          <button type="button" class="  data-out" id="data1_2_out" hidden style="background-color:yellow;">ห้องแลป </button>
-          <button type="button" class="  data-out" id="data1_3_out" hidden style="background-color:yellow;">ห้องทดลอง</button>
-          <button type="button" class="  data-out" id="data2_1_out" hidden style="background-color:blue;color:white;">ห้องภาษา</button>
-          <button type="button" class="  data-out" id="data2_2_out" hidden style="background-color:blue;color:white;">ห้องดนตรี</button>
-          <button type="button" class="  data-out" id="data2_3_out" hidden style="background-color:blue;color:white;">ห้องศิลป์</button>
-          <button type="button" class="  data-out" id="data3_1_out" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button>
-          <button type="button" class="  data-out" id="data3_2_out" hidden style="background-color:purple;color:white;">ห้องคอม</button>
-          <button type="button" class="  data-out" id="data3_3_out" hidden style="background-color:purple;color:white;">ห้องบัญชี</button>
-          <button type="button" class="  data-out" id="data4_1_out" hidden style="background-color:skyblue;">ห้อง</button>
-          <button type="button" class="  data-out" id="data4_2_out" hidden style="background-color:skyblue;">ROOM</button>
-          <button type="button" class="  data-out" id="data4_3_out" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+            <div class="row"><button type="button" class=" btn-success data-out" id="root_out"  hidden>มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data1_out" hidden  style=" background-color:yellow;">ตึกวิทยาศาสตร์ </button></div>
+            <div class="row"><button type="button" class="  data-out" id="data2_out" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button></div>
+            <div class="row"><button type="button" class="  data-out" id="data3_out" hidden  style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data4_out" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button></div>
+            <div class="row"><button type="button" class="  data-out" id="data1_1_out" hidden style="background-color:yellow;">ห้องคอม</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data1_2_out" hidden style="background-color:yellow;">ห้องแลป </button></div>
+            <div class="row"><button type="button" class="  data-out" id="data1_3_out" hidden style="background-color:yellow;">ห้องทดลอง</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data2_1_out" hidden style="background-color:blue;color:white;">ห้องภาษา</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data2_2_out" hidden style="background-color:blue;color:white;">ห้องดนตรี</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data2_3_out" hidden style="background-color:blue;color:white;">ห้องศิลป์</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data3_1_out" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data3_2_out" hidden style="background-color:purple;color:white;">ห้องคอม</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data3_3_out" hidden style="background-color:purple;color:white;">ห้องบัญชี</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data4_1_out" hidden style="background-color:skyblue;">ห้อง</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data4_2_out" hidden style="background-color:skyblue;">ROOM</button></div>
+            <div class="row"><button type="button" class="  data-out" id="data4_3_out" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button></div>
       </div>
       <div class="queue col-lg-5">
             <p> queue</p>
-        <button type="button" class="   btn-success data-queue" id="root_queue"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
-        <button type="button" class="  data-queue" id="data1_queue" hidden  style=" background-color:yellow;">ตึกวิทยาศาสตร์ </button>
-        <button type="button" class="  data-queue" id="data2_queue" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
-        <button type="button" class="  data-queue" id="data3_queue" hidden  style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
-        <button type="button" class="  data-queue" id="data4_queue"  hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button>
-        <button type="button" class="  data-queue" id="data1_1_queue" hidden style="background-color:yellow;">ห้องคอม</button>
-        <button type="button" class="  data-queue" id="data1_2_queue" hidden style="background-color:yellow;">ห้องแลป </button>
-        <button type="button" class="  data-queue" id="data1_3_queue" hidden style="background-color:yellow;">ห้องทดลอง</button>
-        <button type="button" class="  data-queue" id="data2_1_queue" hidden style="background-color:blue;color:white;">ห้องภาษา</button>
-        <button type="button" class="  data-queue" id="data2_2_queue" hidden style="background-color:blue;color:white;">ห้องดนตรี</button>
-        <button type="button" class="  data-queue" id="data2_3_queue" hidden style="background-color:blue;color:white;">ห้องศิลป์</button>
-        <button type="button" class="  data-queue" id="data3_1_queue" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button>
-        <button type="button" class="  data-queue" id="data3_2_queue" hidden style="background-color:purple;color:white;">ห้องคอม</button>
-        <button type="button" class="  data-queue" id="data3_3_queue" hidden style="background-color:purple;color:white;">ห้องบัญชี</button>
-        <button type="button" class="  data-queue" id="data4_1_queue" hidden style="background-color:skyblue;">ห้อง</button>
-        <button type="button" class="  data-queue" id="data4_2_queue" hidden style="background-color:skyblue;">ROOM</button>
-        <button type="button" class="  data-queue" id="data4_3_queue" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+          <div class="row"><button type="button" class="   btn-success data-queue" id="root_queue"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data1_queue" hidden  style=" background-color:yellow;">ตึกวิทยาศาสตร์ </button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data2_queue" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data3_queue" hidden  style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data4_queue"  hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data1_1_queue" hidden style="background-color:yellow;">ห้องคอม</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data1_2_queue" hidden style="background-color:yellow;">ห้องแลป </button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data1_3_queue" hidden style="background-color:yellow;">ห้องทดลอง</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data2_1_queue" hidden style="background-color:blue;color:white;">ห้องภาษา</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data2_2_queue" hidden style="background-color:blue;color:white;">ห้องดนตรี</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data2_3_queue" hidden style="background-color:blue;color:white;">ห้องศิลป์</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data3_1_queue" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data3_2_queue" hidden style="background-color:purple;color:white;">ห้องคอม</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data3_3_queue" hidden style="background-color:purple;color:white;">ห้องบัญชี</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data4_1_queue" hidden style="background-color:skyblue;">ห้อง</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data4_2_queue" hidden style="background-color:skyblue;">ROOM</button></div>
+          <div class="row"><button type="button" class="  data-queue" id="data4_3_queue" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button></div>
       </div>
       <div class="data col-lg-2">
             <p> input </p>
-        <button type="button" class="  btn-success data-data" id="root_data"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
-        <button type="button" class="  data-data" id="data1_data" hidden style="background-color:yellow;">ตึกวิทยาศาสตร์ </button>
-        <button type="button" class="  data-data" id="data2_data" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
-        <button type="button" class="  data-data" id="data3_data" hidden style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
-        <button type="button" class="  data-data" id="data4_data" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button>
-        <button type="button" class="  data-data" id="data1_1_data" hidden style="background-color:yellow;">ห้องคอม</button>
-        <button type="button" class="  data-data" id="data1_2_data" hidden  style="background-color:yellow;">ห้องแลป </button>
-        <button type="button" class="  data-data" id="data1_3_data" hidden style="background-color:yellow;">ห้องทดลอง</button>
-        <button type="button" class="  data-data" id="data2_1_data" hidden style="background-color:blue;color:white;">ห้องภาษา</button>
-        <button type="button" class="  data-data" id="data2_2_data" hidden style="background-color:blue;color:white;">ห้องดนตรี</button>
-        <button type="button" class="  data-data" id="data2_3_data" hidden style="background-color:blue;color:white;">ห้องศิลป์</button>
-        <button type="button" class="  data-data" id="data3_1_data" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button>
-        <button type="button" class="  data-data" id="data3_2_data" hidden style="background-color:purple;color:white;">ห้องคอม</button>
-        <button type="button" class="  data-data" id="data3_3_data" hidden style="background-color:purple;color:white;">ห้องบัญชี</button>
-        <button type="button" class="  data-data" id="data4_1_data" hidden style="background-color:skyblue;">ห้อง</button>
-        <button type="button" class="  data-data" id="data4_2_data" hidden style="background-color:skyblue;">ROOM</button>
-        <button type="button" class="  data-data" id="data4_3_data" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+        <div class="row"><button type="button" class="  btn-success data-data" id="root_data"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data1_data" hidden style="background-color:yellow;">ตึกวิทยาศาสตร์ </button></div>
+        <div class="row"><button type="button" class="  data-data" id="data2_data" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button></div>
+        <div class="row"><button type="button" class="  data-data" id="data3_data" hidden style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data4_data" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button></div>
+        <div class="row"><button type="button" class="  data-data" id="data1_1_data" hidden style="background-color:yellow;">ห้องคอม</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data1_2_data" hidden  style="background-color:yellow;">ห้องแลป </button></div>
+        <div class="row"><button type="button" class="  data-data" id="data1_3_data" hidden style="background-color:yellow;">ห้องทดลอง</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data2_1_data" hidden style="background-color:blue;color:white;">ห้องภาษา</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data2_2_data" hidden style="background-color:blue;color:white;">ห้องดนตรี</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data2_3_data" hidden style="background-color:blue;color:white;">ห้องศิลป์</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data3_1_data" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data3_2_data" hidden style="background-color:purple;color:white;">ห้องคอม</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data3_3_data" hidden style="background-color:purple;color:white;">ห้องบัญชี</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data4_1_data" hidden style="background-color:skyblue;">ห้อง</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data4_2_data" hidden style="background-color:skyblue;">ROOM</button></div>
+        <div class="row"><button type="button" class="  data-data" id="data4_3_data" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button></div>
       </div>
-    <div>
-  <div>
+    </div>
+  </div>
+  <div class="row text-left">
+    <h1>สรุปการค้นหา ต้องผ่านห้องต่างๆจำนวน <u id="number"> </u> ห้อง ดังนี้</h1>
+     <button type="button" class="  btn-success data-data" id="root_finaly"hidden >มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button> >>
+     <button type="button" class="  data-data" id="data1_finaly" hidden style="background-color:yellow;">ตึกวิทยาศาสตร์ </button> >>
+     <button type="button" class="  data-data" id="data2_finaly" hidden style=" background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button> >>
+     <button type="button" class="  data-data" id="data3_finaly" hidden style=" background-color:purple;color:white;">ตึกวิทยาการจัดการ</button> >>
+     <button type="button" class="  data-data" id="data4_finaly" hidden style=" background-color:skyblue;">ตึกครุศาสตร์ </button> >>
+     <button type="button" class="  data-data" id="data1_1_finaly" hidden style="background-color:yellow;">ห้องคอม</button> >>
+     <button type="button" class="  data-data" id="data1_2_finaly" hidden  style="background-color:yellow;">ห้องแลป </button> >>
+     <button type="button" class="  data-data" id="data1_3_finaly" hidden style="background-color:yellow;">ห้องทดลอง</button> >>
+     <button type="button" class="  data-data" id="data2_1_finaly" hidden style="background-color:blue;color:white;">ห้องภาษา</button> >>
+     <button type="button" class="  data-data" id="data2_2_finaly" hidden style="background-color:blue;color:white;">ห้องดนตรี</button> >>
+     <button type="button" class="  data-data" id="data2_3_finaly" hidden style="background-color:blue;color:white;">ห้องศิลป์</button> >>
+     <button type="button" class="  data-data" id="data3_1_finaly" hidden style="background-color:purple;color:white;">ห้องโลจิสติก</button> >>
+     <button type="button" class="  data-data" id="data3_2_finaly" hidden style="background-color:purple;color:white;">ห้องคอม</button> >>
+     <button type="button" class="  data-data" id="data3_3_finaly" hidden style="background-color:purple;color:white;">ห้องบัญชี</button> >>
+     <button type="button" class="  data-data" id="data4_1_finaly" hidden style="background-color:skyblue;">ห้อง</button> >>
+     <button type="button" class="  data-data" id="data4_2_finaly" hidden style="background-color:skyblue;">ROOM</button> >>
+     <button type="button" class="  data-data" id="data4_3_finaly" hidden style="background-color:skyblue;">ห้องนั่งเล่น</button>
+  </div>
 </div>
 </body>
 </html>

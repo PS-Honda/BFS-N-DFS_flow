@@ -3,48 +3,44 @@
 <head>
 <meta charset="utf-8">
 <title>ยินดีต้อนรับ</title>
-<link rel="stylesheet" href="bootstrap.min.css">
-<script src="jquery.min.js"></script>
-<script src="bootstrap.min.js"></script>
 <script type="text/javascript">
-$(document).ready(function(){
   var dataTree = new Array();
   function getData2Tree(){ //ฟังก์ชันนำข้อมูลเข้าสู่ต้นไม้
     dataTree.push('root'); //เพิ่มโหนดราก
     for(var i=1; i<=4; i++){ //ตามจำนวนตึก
-      var tmpParent = $('#data'+i).prop('id'); //เก็บ id ตึก ในตัวแปร
+      var tmpParent = 'data'+i; //เก็บ id ตึก ในตัวแปร
       dataTree.push(tmpParent); //เก็บ id ตึก ในต้นไม้
       }
     for(var i=1; i<=4; i++){ //ตามจำนวนตึก
       for(var j = 1; j<=3; j++){ //ตามจำนวนห้องต่อ1ตึก
-        var tmpChiled = $('#data'+i+'_'+j).prop('id'); //เก็บ id ห้อง ในตัวแปร
+        var tmpChiled = 'data'+i+'_'+j; //เก็บ id ห้อง ในตัวแปร
         dataTree.push(tmpChiled); //เก็บ id ห้อง ในต้นไม้
       }
     }
   }
-  function setTreeToData(data){ //ฟังก์ชันย้ายจากต้นไม้มาInput
-    $('#'+data).attr('hidden',true);  //ลบโหนดที่ต้นไม
-    $('#'+data+"_data").attr('hidden',false);  //แสดงโนหดที่ input
+  function setTreeToData(data){ //ฟังก์ชันย้ายจากต้นไม้ มาInput
+    document.getElementById(data).style.display = "none";
+    console.log(document.getElementById(data)); //ลบโหนดที่ต้นไม
+    document.getElementById(data+"_data").style.display = "block";  //แสดงโนหดที่ input
   }
   function setDataToQueue(data){
-    $('#'+data+"_data").attr('hidden',true);  //ลบโหนดที่ input
-    $('#'+data+"_queue").attr('hidden',false);  //แสดงโหนดที่ queue
+    document.getElementById(data+"_data").style.display = "block";  //ลบโหนดที่ input
+    document.getElementById(data+"_queue").style.display = "block";  //แสดงโหนดที่ queue
   }
   function setQueueToOutput(data){/*
-    $('#'+data+"_queue").attr('hidden',true);  //ลบโหนดที่ queue*/
-    $('#'+data+"_queue").css('background-color','red'); //เปลี่ยนสีของห้องที่เดินผ่านเป็นสีแดง
-    $('#'+data+"_out").attr('hidden',false);  //แสดงโนหดที่ output
+    $('#'+data+"_queue").setAttribute('hidden',true);  //ลบโหนดที่ queue*/
+    document.getElementById(data+"_queue").css('background-color','red'); //เปลี่ยนสีของห้องที่เดินผ่านเป็นสีแดง
+    document.getElementById(data+"_out").style.display = "block";  //แสดงโนหดที่ output
   }
   function getTimeline(index){ // ฟังก์ชัน แสดงพาทใหม่
     for(let i = 0; i<=index; i++){ //รับค่าว่าต้องแสดงตัวไหนบ้าง
-      $('#'+dataTree[i]+"_finaly").attr('hidden',false); //สั่งให้แสดง
-
+      document.getElementById(dataTree[i]+"_finaly").style.display = "block"; //สั่งให้แสดง3
       }
   }
 function getToData(i,result,speed){  //ฟังก์ชัน เรียกใช้ฟังก์ชัน setTreeToData แบบวนซ้ำ
   var index = i; //ประกาศตัวแปรจาก พารามิเตอร์ (ส่วนของต่ำแหน่งของข้อมูล)
   var time = speed; //ประกาศตัวแปรจาก พารามิเตอร์  (ส่วนของความเร็วในการเปลี่ยนแปลง)
-  setTreeToData(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
+    setTreeToData(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
       setTimeout(function(){ //คำสั่งหน่วงเวลา พร้อมฟังก์ชันการทำงาน
       if(index >= dataTree.length){ //ตรวจสอบว่าตำแหน่งข้อมูลเกินกว่าจำนวนข้อมูลที่มมีอยู่ไหม
         getToQueue(0,result,speed); //เป็นจริงให้เรียกใช้ฟังก์ชั้นต่อไป
@@ -71,36 +67,36 @@ function getToOut(i,result,speed){ //ฟังก์ชัน เรียกใ
   var index = i;  //ประกาศตัวแปรจาก พารามิเตอร์ (ส่วนของต่ำแหน่งของข้อมูล)
   var time = speed; //ประกาศตัวแปรจาก พารามิเตอร์  (ส่วนของความเร็วในการเปลี่ยนแปลง)
   setQueueToOutput(dataTree[index]); //เรียกฟังก์ชันพร้อมให้ข้อมูล
-  var output = $('#'+dataTree[index]).prop('id'); //นำข้อมูลที่ได้ไปเรียกดู id ของข้อมูล และเก็บในตัวแปร
+  var output = document.getElementById(dataTree[index]).setAttribute('id'); //นำข้อมูลที่ได้ไปเรียกดู id ของข้อมูล และเก็บในตัวแปร
   if(output == result){ //ตัวแปรที่ดึงข้อมูลมาเปรียบเทียบกับผลลัพธ์ที่ต้องการ
-    $('#'+dataTree[index]+"_out").css('background-color','#4dff4d'); // เปลี่ยนสีผลลัพท์เป็นสีเขียว
-    $('#'+dataTree[index]+"_finaly").css('background-color','#4dff4d'); // เปลี่ยนสีผลลัพท์เป็นสีเขียว
+    document.getElementById(dataTree[index]+"_out").css('background-color','#4dff4d'); // เปลี่ยนสีผลลัพท์เป็นสีเขียว
+    document.getElementById(dataTree[index]+"_finaly").css('background-color','#4dff4d'); // เปลี่ยนสีผลลัพท์เป็นสีเขียว
     //alert('Find time\'s : '+(index+1)); //ถ้าเป็นจริง แสดงจำนวนครั้งที่ค้นหา
-    document.getElementById("number").innerHTML = index+1; //บอกจำนวนห้องที่ต้องแสดง
+    document.getElementById("number").innerHTML = index; //บอกจำนวนห้องที่ต้องแสดง
     getTimeline(index); //เรียกใช้คำสั่งแสดงรายการ
     return true; //ยุติฟังก์ชั้นทั้งหมด
   }else{
       setTimeout(function(){  //คำสั่งหน่วงเวลา พร้อมฟังก์ชันการทำงาน
-      $('#'+dataTree[index]+"_out").css('background-color','red'); //เปลี่ยนสีของห้องที่เดินผ่านเป็นสีแดง
+      document.getElementById(dataTree[index]+"_out").css('background-color','red'); //เปลี่ยนสีของห้องที่เดินผ่านเป็นสีแดง
       index++; // เป็นเท็จให้เพิ่มตำแหน่งข้อมูลอีก 1
       getToOut(index,result,speed);  //เรียกใช้ฟังก์ชั้นตัวเอง (การวนซ้ำ)
     },time); // กำหนดเวลาหน่วง
   }
 }
 
-$('#start').click(function(){//เริ่มทำงานเมื่อคลิกปุ่ม เหมือน void main
+function start(){//เริ่มทำงานเมื่อคลิกปุ่ม เหมือน void main
   getData2Tree();//สั่งให้นำข้อมูลเข้าต้นไม้
-  var getNode = $('#selectNode').val(); //รับผลลัพธ์ที่ต้องการไว้ตัวแปร
-  var speed =   $('#speed').val(); // รับความเร็วที่ต้องการไว้ตัวแปร
+  var getNode = document.getElementById('selectNode').value; //รับผลลัพธ์ที่ต้องการไว้ตัวแปร
+  var speed =   document.getElementById('speed').value;// รับความเร็วที่ต้องการไว้ตัวแปร
   if(getNode == '' || speed == '' ){ //ตรวจสอบค่าที่รับมาครบไหม
     alert('กรุณาระบุเงื่อนไขให้ครบ'); //ไม่ครบให้แจ้งเตือนและใส่ใหม่
   }else{
       getToData(0,getNode,speed); // ครบให้เริ่มทำงานพร้อมให้ข้อใูล
     }
-  });
-    });
+  }
 </script>
 <style>
+
 .output{
   background-color: lightgreen;
   padding-top: 60px;
@@ -117,15 +113,9 @@ $('#start').click(function(){//เริ่มทำงานเมื่อค�
   padding-top: 60px;
   margin-left: 100px;
 }
-/* .data-out{
-  visibility: hidden;
+.treeNode{
+  visibility: visible;
 }
-.data-queue{
-  visibility: hidden;
-}
-.data-data{
-  visibility: hidden;
-} */
 </style>
 </head>
 <body style="background-color:#e6f7ff;">
@@ -158,36 +148,36 @@ $('#start').click(function(){//เริ่มทำงานเมื่อค�
       <option value="1000">  1 วินาที </option>
     </select>
   </div>
-    <button type="button" class="btn btn-primary" id="start">BFS Start</button>
+    <button type="button" class="btn btn-primary" id="start" onclick="start()">BFS Start</button>
   </div>
   <br>
   <div class="row">
-    <button type="button" class=" btn-success" id="root">มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
+    <button type="button" class="treeNode btn-success" id="root">มหาวิทยาลัยราชภัฏพระนครศรีอยุธยา</button>
   </div>
   <br><br><br>
   <div class="row text-left">
-    <button type="button" class="" id="data1" style="margin-left:10%;background-color:yellow;">ตึกวิทยาศาสตร์ </button>
-    <button type="button" class="" id="data2" style="margin-left:10%;background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
-    <button type="button" class="" id="data3" style="margin-left:10%;background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
-    <button type="button" class="" id="data4" style="margin-left:10%;background-color:skyblue;">ตึกครุศาสตร์ </button>
+    <button type="button" class="treeNode" id="data1" style="margin-left:10%;background-color:yellow;">ตึกวิทยาศาสตร์ </button>
+    <button type="button" class="treeNode" id="data2" style="margin-left:10%;background-color:blue;color:white;">ตึกมนุษย์ศาสตร์และสังคมศาสตร์ </button>
+    <button type="button" class="treeNode" id="data3" style="margin-left:10%;background-color:purple;color:white;">ตึกวิทยาการจัดการ</button>
+    <button type="button" class="treeNode" id="data4" style="margin-left:10%;background-color:skyblue;">ตึกครุศาสตร์ </button>
   </div>
     <br><br><br>
   <div class="row text-left">
-    <button type="button" class="" id="data1_1" style="background-color:yellow;">ห้องคอม</button>
-    <button type="button" class="" id="data1_2" style="background-color:yellow;">ห้องแลป </button>
-    <button type="button" class="" id="data1_3" style="background-color:yellow;">ห้องทดลอง</button>
+    <button type="button" class="treeNode" id="data1_1" style="background-color:yellow;">ห้องคอม</button>
+    <button type="button" class="treeNode" id="data1_2" style="background-color:yellow;">ห้องแลป </button>
+    <button type="button" class="treeNode" id="data1_3" style="background-color:yellow;">ห้องทดลอง</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button type="button" class="" id="data2_1" style="background-color:blue;color:white;">ห้องภาษา</button>
-    <button type="button" class="" id="data2_2" style="background-color:blue;color:white;">ห้องดนตรี</button>
-    <button type="button" class="" id="data2_3" style="background-color:blue;color:white;">ห้องศิลป์</button>
+    <button type="button" class="treeNode" id="data2_1" style="background-color:blue;color:white;">ห้องภาษา</button>
+    <button type="button" class="treeNode" id="data2_2" style="background-color:blue;color:white;">ห้องดนตรี</button>
+    <button type="button" class="treeNode" id="data2_3" style="background-color:blue;color:white;">ห้องศิลป์</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button type="button" class="" id="data3_1" style="background-color:purple;color:white;">ห้องโลจิสติก</button>
-    <button type="button" class="" id="data3_2" style="background-color:purple;color:white;">ห้องคอม</button>
-    <button type="button" class="" id="data3_3" style="background-color:purple;color:white;">ห้องบัญชี</button>
+    <button type="button" class="treeNode" id="data3_1" style="background-color:purple;color:white;">ห้องโลจิสติก</button>
+    <button type="button" class="treeNode" id="data3_2" style="background-color:purple;color:white;">ห้องคอม</button>
+    <button type="button" class="treeNode" id="data3_3" style="background-color:purple;color:white;">ห้องบัญชี</button>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    <button type="button" class="" id="data4_1" style="background-color:skyblue;">ห้อง</button>
-    <button type="button" class="" id="data4_2" style="background-color:skyblue;">ROOM</button>
-    <button type="button" class="" id="data4_3" style="background-color:skyblue;">ห้องนั่งเล่น</button>
+    <button type="button" class="treeNode" id="data4_1" style="background-color:skyblue;">ห้อง</button>
+    <button type="button" class="treeNode" id="data4_2" style="background-color:skyblue;">ROOM</button>
+    <button type="button" class="treeNode" id="data4_3" style="background-color:skyblue;">ห้องนั่งเล่น</button>
   </div>
   <br><br>
   <div class="row">
